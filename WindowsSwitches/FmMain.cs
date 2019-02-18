@@ -25,8 +25,8 @@ namespace WindowsSwitches
 
         private void WylaczKomputer()
         {
-            MessageBox.Show("Wyłączono komputer");
-            //Process.Start("shutdown", "/s /t 0");
+            //MessageBox.Show("Wyłączono komputer");
+            Process.Start("shutdown", "/s /t 0");
         }
 
         private void UstawCzasWOparciuOGodzine()
@@ -107,6 +107,24 @@ namespace WindowsSwitches
         private void nudLeftTime_ValueChanged(object sender, EventArgs e)
         {
             UstawGodzineWOparciuOCzas();
+        }
+
+        private void FmMain_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ShowInTaskbar = true;
+                notifyIcon.Visible = true;
+                notifyIcon.Text = "Windows Switches. " + (uruchomionoWylaczanie ? "Zaplanowano wyłączenie komputera o " + dtpTime.Text : "Nie zaplanowano wyłączenia komputera");
+                this.Hide();
+            }
+        }
+
+        private void notifyIcon_Click(object sender, EventArgs e)
+        {
+            notifyIcon.Visible = false;
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
     }
 }

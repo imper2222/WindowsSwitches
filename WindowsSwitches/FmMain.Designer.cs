@@ -37,6 +37,7 @@
             this.btStart = new System.Windows.Forms.Button();
             this.btStop = new System.Windows.Forms.Button();
             this.nudLeftTime = new System.Windows.Forms.NumericUpDown();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudLeftTime)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,6 +107,12 @@
             this.nudLeftTime.TabIndex = 11;
             this.nudLeftTime.ValueChanged += new System.EventHandler(this.nudLeftTime_ValueChanged);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
+            // 
             // FmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -122,6 +129,7 @@
             this.MaximizeBox = false;
             this.Name = "FmMain";
             this.Text = "WindowsSwitches";
+            this.Resize += new System.EventHandler(this.FmMain_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.nudLeftTime)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -136,6 +144,7 @@
         private System.Windows.Forms.Button btStop;
         internal System.Windows.Forms.DateTimePicker dtpTime;
         private System.Windows.Forms.NumericUpDown nudLeftTime;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 
