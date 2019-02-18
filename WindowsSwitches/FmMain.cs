@@ -12,7 +12,7 @@ namespace WindowsSwitches
 {
     public partial class FmMain : Form
     {
-        private bool uruchomionoWylaczanie = false;
+        private bool uruchomionoZadanie = false;
 
         public FmMain()
         {
@@ -20,13 +20,27 @@ namespace WindowsSwitches
             UstawDostepnoscKontrolek();
             //dtpTime.Value = DateTime.Now;
             nudLeftTime.Value = 45;
+            cbZadanie.Text = "zamknij";
             timer.Start();          
         }
 
-        private void WylaczKomputer()
-        {
-            //MessageBox.Show("Wyłączono komputer");
-            Process.Start("shutdown", "/s /t 0");
+        private void UruchomKomende()
+        {            
+            string parametrZadania;
+            string zadanie = cbZadanie.Text;
+            switch (zadanie)
+            {
+                case "zamknij": parametrZadania = "/s"; break;
+                case "uruchom ponownie": parametrZadania = "/r"; break;
+                case "wyloguj": parametrZadania = "/l"; break;
+                case "uśpij": parametrZadania = "/h"; break;
+                default: parametrZadania = "/s"; break;
+            }
+
+            string komenda = "shutdown";
+            string parametry = String.Format("{0} /t 0", parametrZadania);
+            //MessageBox.Show(komenda + " " + parametry);
+            Process.Start(komenda, parametry);
         }
 
         private void UstawCzasWOparciuOGodzine()
@@ -45,10 +59,10 @@ namespace WindowsSwitches
 
         private void UstawDostepnoscKontrolek()
         {
-            btStart.Enabled = !uruchomionoWylaczanie;
-            btStop.Enabled = uruchomionoWylaczanie;
-            dtpTime.Enabled = !uruchomionoWylaczanie;
-            nudLeftTime.Enabled = !uruchomionoWylaczanie;
+            btStart.Enabled = !uruchomionoZadanie;
+            btStop.Enabled = uruchomionoZadanie;
+            dtpTime.Enabled = !uruchomionoZadanie;
+            nudLeftTime.Enabled = !uruchomionoZadanie;
         }
 
         private TimeSpan GetDifferencesBetweenHoures(TimeSpan time1, TimeSpan time2)
@@ -66,13 +80,13 @@ namespace WindowsSwitches
 
         private void btStart_Click(object sender, EventArgs e)
         {           
-            uruchomionoWylaczanie = true;
+            uruchomionoZadanie = true;
             UstawDostepnoscKontrolek();
         }
 
         private void btStop_Click(object sender, EventArgs e)
         {           
-            uruchomionoWylaczanie = false;
+            uruchomionoZadanie = false;
             UstawDostepnoscKontrolek();
         }
 
@@ -88,13 +102,13 @@ namespace WindowsSwitches
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (uruchomionoWylaczanie)
+            if (uruchomionoZadanie)
             {
                 UstawCzasWOparciuOGodzine();
                 if ((int)DateTime.Now.TimeOfDay.TotalMinutes == (int)dtpTime.Value.TimeOfDay.TotalMinutes)
                 {
-                    uruchomionoWylaczanie = false;
-                    WylaczKomputer();
+                    uruchomionoZadanie = false;
+                    UruchomKomende();
                 }
             }
         }
@@ -115,7 +129,7 @@ namespace WindowsSwitches
             {
                 this.ShowInTaskbar = true;
                 notifyIcon.Visible = true;
-                notifyIcon.Text = "Windows Switches. " + (uruchomionoWylaczanie ? "Zaplanowano wyłączenie komputera o " + dtpTime.Text : "Nie zaplanowano wyłączenia komputera");
+                notifyIcon.Text = "Windows Switches. " + (uruchomionoZadanie ? "Zaplanowano wyłączenie komputera o " + dtpTime.Text : "Nie zaplanowano wyłączenia komputera");
                 this.Hide();
             }
         }
