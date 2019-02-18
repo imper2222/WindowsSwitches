@@ -25,24 +25,21 @@ namespace WindowsSwitches
 
         private void WylaczKomputer()
         {
-            //MessageBox.Show("Wyłączono komputer");
-            Process.Start("shutdown", "/s /t 0");
+            MessageBox.Show("Wyłączono komputer");
+            //Process.Start("shutdown", "/s /t 0");
         }
 
         private void UstawCzasWOparciuOGodzine()
         {
             nudLeftTime.ValueChanged -= nudLeftTime_ValueChanged;
-            if ((int)dtpTime.Value.TimeOfDay.TotalMinutes >= (int)DateTime.Now.TimeOfDay.TotalMinutes)
-                nudLeftTime.Value = (int)dtpTime.Value.TimeOfDay.TotalMinutes - (int)DateTime.Now.TimeOfDay.TotalMinutes;
-            else
-                nudLeftTime.Value = 1440 + ((int)dtpTime.Value.TimeOfDay.TotalMinutes - (int)DateTime.Now.TimeOfDay.TotalMinutes);
+            nudLeftTime.Value = (int)GetDifferencesBetweenHoures(DateTime.Now.TimeOfDay,dtpTime.Value.TimeOfDay).TotalMinutes + 1;
             nudLeftTime.ValueChanged += nudLeftTime_ValueChanged;
         }
 
         private void UstawGodzineWOparciuOCzas()
         {
             dtpTime.ValueChanged -= dtpTime_ValueChanged;
-            dtpTime.Value = new DateTime(new DateTime(1753, 01, 01).Ticks + (DateTime.Now.TimeOfDay + new TimeSpan(0, (int)nudLeftTime.Value, 0)).Ticks);
+            dtpTime.Value = DateTime.Now.AddMinutes((int)nudLeftTime.Value);
             dtpTime.ValueChanged += dtpTime_ValueChanged;
         }
 
@@ -52,6 +49,19 @@ namespace WindowsSwitches
             btStop.Enabled = uruchomionoWylaczanie;
             dtpTime.Enabled = !uruchomionoWylaczanie;
             nudLeftTime.Enabled = !uruchomionoWylaczanie;
+        }
+
+        private TimeSpan GetDifferencesBetweenHoures(TimeSpan time1, TimeSpan time2)
+        {
+            DateTime date1 = DateTime.MinValue.Add(time1);
+            DateTime date2 = DateTime.MinValue.Add(time2);
+
+            if (time1 > time2)
+                date2 = date2.AddDays(1);
+
+            TimeSpan difference = (date2 - date1);
+            difference = new TimeSpan(0, difference.Hours, difference.Minutes, difference.Seconds, difference.Milliseconds);
+            return difference;
         }
 
         private void btStart_Click(object sender, EventArgs e)
